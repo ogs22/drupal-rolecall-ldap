@@ -1,0 +1,10 @@
+name = Rolecall Add roles depending on ldap
+description = Rolecall Add roles from ldap
+core = 7.x
+package = Owen Smith
+version = 7.x-1
+configure = admin/config/people/rolecallldap
+
+dependencies[] = user
+files[] = rolecallldap.module
+

@@ -1,0 +1,15 @@
+Lookup/Ibis web service API PHP client code
+===========================================
+
+This code requires PHP version 5.3 or later.
+
+Usage
+-----
+
+Refer to example.php for an example of how to use the API from PHP.
+For more detailed documentation refer to the web service API documentation
+and the Javadocs for the Java client code, which this Python client code
+mirrors:
+
+http://www.lookup.cam.ac.uk/doc/ws-doc/
+http://www.lookup.cam.ac.uk/doc/ws-javadocs/index.html

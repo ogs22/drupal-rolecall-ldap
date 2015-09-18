@@ -1,0 +1,56 @@
+<?php
+
+require_once "ibis-php-client-api/ibisclient/client/IbisClientConnection.php";
+require_once "ibis-php-client-api/ibisclient/methods/InstitutionMethods.php";
+require_once "ibis-php-client-api/ibisclient/methods/PersonMethods.php";
+
+
+function rolecallldap_user_login(&$edit, $account, $category = NULL) {
+    $crsid = $account->name;
+    $institutions = rolecallldap_getIn($crsid);
+    
+    $rolemap = array(
+        "Raven-damtpusers" => "DAMTP",
+        "Raven-dpmms" => "DPMMS"
+    );
+    
+    foreach ($rolemap as $key => $value) {
+        $roleobj = user_role_load_by_name($key);
+        if (in_array($value, $institutions)) {
+            $iam = user_has_role($roleobj->rid);
+            if ($iam) {
+                //user already in group
+            } else {
+                // add them in
+                $roles = $account->roles + array($roleobj->rid => $role);
+                $account->original = clone $account;
+                user_save($account, array('roles' => $roles));
+            }
+        } else {
+            //remove the role from the account!
+            //drupal_set_message(t("removing role from user"));
+            $roles = $account->roles;
+            unset($roles[$roleobj->rid]);
+            $account->original = clone $account;
+            user_save($account, array('roles' => $roles));
+        }
+}
+    
+}
+
+/*                                                                              
+  given a user CRSID return an array of institutions                            
+ */
+function rolecallldap_getIn($user) {
+  $mem = array();
+  $fetch = "all_insts";
+  $conn = IbisClientConnection::createConnection();
+  $pm = new PersonMethods($conn);
+  $person = $pm->getPerson("crsid",$user,$fetch);
+  $institutions = $person->institutions;
+  foreach($institutions as $key => $value) {
+    $mem[] =  $value->instid;
+  }
+  return $mem;
+}
+
