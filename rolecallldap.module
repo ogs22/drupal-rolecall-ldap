@@ -1,11 +1,14 @@
 <?php
 
-/* IBIS CLIENT IF FROM http://dev.csi.cam.ac.uk/trac/lookup/browser/trunk/downloads/php */
+/* IBIS CLIENT IS FROM http://dev.csi.cam.ac.uk/trac/lookup/browser/trunk/downloads/php */
 
 require_once "ibis-php-client-api/ibisclient/client/IbisClientConnection.php";
 require_once "ibis-php-client-api/ibisclient/methods/PersonMethods.php";
 
-
+/*
+ * Function is called once everytime a user logs in
+ * 
+ */
 function rolecallldap_user_login(&$edit, $account, $category = NULL) {
     $crsid = $account->name;
     $institutions = rolecallldap_getIn($crsid);
