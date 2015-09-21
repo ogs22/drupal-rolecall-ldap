@@ -62,9 +62,11 @@ function rolecallldap_getIn($user) {
   $conn = IbisClientConnection::createConnection();
   $pm = new PersonMethods($conn);
   $person = $pm->getPerson("crsid",$user,$fetch);
-  $institutions = $person->institutions;
-  foreach($institutions as $key => $value) {
-    $mem[] =  $value->instid;
+  if (is_object($person)) {
+    $institutions = $person->institutions;
+    foreach($institutions as $key => $value) {
+        $mem[] =  $value->instid;
+    }
   }
   return $mem;
 }
