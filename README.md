@@ -2,7 +2,7 @@
 
 ### a Drupal module for applying roles to users based on the their IDs and info from LDAP.
 
-### Only works with in the __Cambridge University Data Network__
+Only works within the __Cambridge University Data Network__
 
 Install the module into sites/all/modules/
 
