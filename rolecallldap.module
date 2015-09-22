@@ -32,7 +32,7 @@ function rolecallldap_user_login(&$edit, $account, $category = NULL) {
         }
 	$iam = user_has_role($roleobj->rid);
         if (in_array($value, $institutions)) {
-            if ($iam) {
+            if ($iam !== FALSE) {
                 //user already has role/in group
             } else {
                 // add role to their account
@@ -41,7 +41,7 @@ function rolecallldap_user_login(&$edit, $account, $category = NULL) {
                 user_save($account, array('roles' => $roles));
             }
         } else {
-            if ($iam) {
+            if ($iam !== FALSE) {
                 //remove the role from the account!
                 $type = "Rolecall-ldap";
                 $message = "User: ".$crsid." is not listed as a member of: ".$value." removing ".$role." from their account";
