@@ -21,6 +21,7 @@ function rolecallldap_user_login(&$edit, $account, $category = NULL) {
     
     foreach ($rolemap as $role => $value) {
         /* user_role_load_by_name() gone in DRUPAL 8 */
+	$iam = FALSE;
         $roleobj = user_role_load_by_name($role);
         if ($roleobj === FALSE) {
             $type = "Rolecall-ldap";
@@ -29,8 +30,8 @@ function rolecallldap_user_login(&$edit, $account, $category = NULL) {
             watchdog($type, $message, array(), $severity);
             break;
         }
+	$iam = user_has_role($roleobj->rid);
         if (in_array($value, $institutions)) {
-            $iam = user_has_role($roleobj->rid);
             if ($iam) {
                 //user already has role/in group
             } else {
@@ -40,15 +41,19 @@ function rolecallldap_user_login(&$edit, $account, $category = NULL) {
                 user_save($account, array('roles' => $roles));
             }
         } else {
-            //remove the role from the account!
-            $type = "Rolecall-ldap";
-            $message = "User: ".$crsid." is not listed as a member of: ".$value." removing ".$role." from their account";
-            $severity = WATCHDOG_WARNING;        
-            watchdog($type, $message, array(), $severity);
-            $roles = $account->roles;
-            unset($roles[$roleobj->rid]);
-            $account->original = clone $account;
-            user_save($account, array('roles' => $roles));
+            if ($iam) {
+                //remove the role from the account!
+                $type = "Rolecall-ldap";
+                $message = "User: ".$crsid." is not listed as a member of: ".$value." removing ".$role." from their account";
+                $severity = WATCHDOG_WARNING;        
+                watchdog($type, $message, array(), $severity);
+                $roles = $account->roles;
+                unset($roles[$roleobj->rid]);
+                $account->original = clone $account;
+                user_save($account, array('roles' => $roles));
+            } else {
+                //do nothing as user doesn't have role
+            }
         }
     }   
 }
